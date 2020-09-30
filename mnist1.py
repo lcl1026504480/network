@@ -32,9 +32,17 @@ class nn:
         output = self.acfun(outinput)
 
         errors = target_list - output
-        herrors = np.dot(self.who.T, errors)
+
         self.who += self.lr * np.dot(errors * output * (1 - output),
                                      hidden_output.T)
+        # 重新更新输出和误差
+        outinput = np.dot(self.who, hidden_output)
+        output = self.acfun(outinput)
+
+        errors = target_list - output
+
+        herrors = np.dot(self.who.T, errors)
+
         self.wih += self.lr * np.dot(herrors * hidden_output * (1 - hidden_output),
                                      inputs.T)
 
@@ -53,7 +61,7 @@ inputnodes = 28 * 28
 hiddennodes = 200
 outputnodes = 10
 
-learningrate = 0.1
+learningrate = 0.075
 n = nn(inputnodes, hiddennodes, outputnodes, learningrate)
 train_data_file = open("mnist_train_100.csv", "r")
 train_data_list = train_data_file.readlines()
